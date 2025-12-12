@@ -14,7 +14,7 @@ def transform_track_df(df):
 
     #drop rows with old information since we only want the latest road condition data
 
-    df = df.query("forecast_name == '2h' or forecast_name == '0h' or forecast_name '4h' or forecast_name == '6h'")
+    df = df.query("forecast_name == '2h' or forecast_name == '0h' or forecast_name =='4h' or forecast_name == '6h'")
 
     df["road_number"] = df["section_id"].str.split("_").str[0].astype(int)
     print(df["road_number"])
