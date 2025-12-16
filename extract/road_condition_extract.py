@@ -3,33 +3,30 @@ import pandas as pd
 import json
 
 
-def get_road_weater_data():
+def get_road_weather_data():
 
-    results = requests.get("https://tie.digitraffic.fi/api/weather/v1/forecast-sections/forecasts")
+    results = requests.get("https://tie.digitraffic.fi/api/weather/v1/forecast-sections/forecasts", timeout=10)
+    results.raise_for_status()
+    data = results.json()
+    
+    return data
+    
 
-    if results.status_code == 200:
-        data = results.json()
-    
-        return data
-    
-    else:
-        return None
+
     
 def get_road_data():
-    results = requests.get("https://tie.digitraffic.fi/api/weather/v1/forecast-sections")
-    if results.status_code == 200:
-        data = results.json()
+    results = requests.get("https://tie.digitraffic.fi/api/weather/v1/forecast-sections",timeout=10)
+    results.raise_for_status()
+    data = results.json()
         
-        return data
+    return data
         
-    else:
-        return None
 
 
 def load_street_forecast():
 
     road_data = get_road_data()
-    road_weather_data = get_road_weater_data()
+    road_weather_data = get_road_weather_data()
 
     joined_data = []
 
@@ -44,18 +41,18 @@ def load_street_forecast():
                     joined_data.append({
                     "section_id": section_id,
                     "coordinates": section_coordinates,
-                    "forecast_time": forecast["time"],
-                    "forecast_type": forecast["type"],
-                    "forecast_name": forecast["forecastName"],
-                    "daylight": forecast["daylight"],
-                    "road_temperature": forecast["roadTemperature"],
-                    "air_temperature": forecast["temperature"],
-                    "wind_speed": forecast["windSpeed"],
-                    "wind_direction": forecast["windDirection"],
-                    "overall_road_condition": forecast["overallRoadCondition"],
-                    "weather_symbol": forecast["weatherSymbol"],
-                    "reliability": forecast["reliability"],
-                    "data_updated_time": forecast["dataUpdatedTime"],
+                    "forecast_time": forecast.get("time"),
+                    "forecast_type": forecast.get("type"),
+                    "forecast_name": forecast.get("forecastName"),
+                    "daylight": forecast.get("daylight"),
+                    "road_temperature": forecast.get("roadTemperature"),
+                    "air_temperature": forecast.get("temperature"),
+                    "wind_speed": forecast.get("windSpeed"),
+                    "wind_direction": forecast.get("windDirection"),
+                    "overall_road_condition": forecast.get("overallRoadCondition"),
+                    "weather_symbol": forecast.get("weatherSymbol"),
+                    "reliability": forecast.get("reliability"),
+                    "data_updated_time": forecast.get("dataUpdatedTime"),
                     # Optional fields that might not always be present 
                     "precipitation_condition": forecast.get("forecastConditionReason", {}).get("precipitationCondition"),
                     "road_condition": forecast.get("forecastConditionReason", {}).get("roadCondition")
@@ -64,9 +61,9 @@ def load_street_forecast():
     return df
 
                     
-
-df = load_street_forecast()
-print(df)
+if __name__ == "__main__":
+    df = load_street_forecast()
+    print(df["forecast_name"])
 
 
 

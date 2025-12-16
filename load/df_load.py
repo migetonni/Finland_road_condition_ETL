@@ -1,8 +1,8 @@
 import pandas as pd
 import os
-from supabase import create_client, Client
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
+
 
 
 
@@ -20,25 +20,32 @@ def create_postgres_engine():
     engine = create_engine(connection_string)
     return engine
     
-
+ENGINE = create_postgres_engine()
 
 def load_tracks_postgres(df):
-    
-    engine = create_postgres_engine()
+    if df.empty:
+        raise ValueError("DataFrame is empty aborting load.")
+
+
     try:
-            # Load data using to_sql
+         with ENGINE.begin() as connection:
+            # Remove all old data since we only need the latest data in our use case
+            connection.execute(text("TRUNCATE TABLE road_sections"))
+
+            # Insert fresh data
             df.to_sql(
-                name='road_sections',
-                con=engine,
-                if_exists='replace',
+                name="road_sections",
+                con=connection,
+                if_exists="append",
                 index=False,
-                method='multi',
+                method="multi",
                 chunksize=5000
             )
             
             
-            return True
+    
             
     except Exception as e:
-        print(f"Error loading to PostgreSQL: {e}")
-        return False
+        raise RuntimeError("Failed to load data into PostgreSQL") from e
+    return len(df)
+        

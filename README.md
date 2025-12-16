@@ -37,7 +37,7 @@ uvx prefect-cloud deploy flows/etl_pipeline.py:main \
   --with psycopg2-binary \
 
 FOR AUTOMATED SCHEDULED RUNS FOR MY INTENDED PURPOSE
-uvx prefect-cloud schedule "main/finroadETL" "*/5 * * * *"
+uvx prefect-cloud schedule "main/finroadETL" "0 7 * * *"
 <img width="427" height="376" alt="image" src="https://github.com/user-attachments/assets/d45236d7-ae24-4d2d-8f59-4b088a943f34" />
 
 
