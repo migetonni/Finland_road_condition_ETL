@@ -27,6 +27,9 @@ Features
 The pipeline uses a multitable schema separating static road data (road_sections) from time-variant forecast data (road_forecasts).
 Schema is managed outside the ETL runtime using SQL
 
+<img width="1026" height="698" alt="image" src="https://github.com/user-attachments/assets/c6cdfc26-646f-4cd3-843a-5682179ad829" />
+
+
 
 **DEPLOYMENT**
 This pipeline is deployed and managed via Prefect Cloud using the uv build system.
