@@ -11,23 +11,22 @@ def extract_task():
     return load_street_forecast()
 
 @task
-def transform_task(df):
-    if df.empty:
+def transform_task(road_df, forecast_df):
+    if road_df.empty or forecast_df.empty:
         raise RuntimeError("df is empty")
-    return transform_track_df(df)  
+    return transform_track_df(road_df, forecast_df)  
 
 @task(retries=3, retry_delay_seconds=10)
-def load_task(df):
-    load_tracks_postgres(df)  
+def load_task(road_df, forecast_df):
+    return load_tracks_postgres(road_df, forecast_df)  
 
 @flow
 def main():
     logger = get_run_logger()
-    df = extract_task()
-    df_clean = transform_task(df)
-    
-    
-    load_task(df_clean)
+
+    road_df, forecast_df = extract_task()
+    road_df_clean, forecast_df_clean = transform_task(road_df, forecast_df)
+    load_task(road_df_clean, forecast_df_clean)
     logger.info(f"Loaded {load_task} rows into PostgreSQL")
 
 if __name__ == "__main__":

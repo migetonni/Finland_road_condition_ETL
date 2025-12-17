@@ -28,7 +28,8 @@ def load_street_forecast():
     road_data = get_road_data()
     road_weather_data = get_road_weather_data()
 
-    joined_data = []
+    road_sections_data = []
+    forecast_data = []
 
     for section in road_data["features"]:
         section_id = section["id"]
@@ -38,9 +39,11 @@ def load_street_forecast():
             if i["id"] == section_id:
                  condition_list = i["forecasts"]
                  for forecast in condition_list:
-                    joined_data.append({
+                    road_sections_data.append({
                     "section_id": section_id,
-                    "coordinates": section_coordinates,
+                    "coordinates": section_coordinates})
+                    forecast_data.append({
+                    "section_id": section_id,
                     "forecast_time": forecast.get("time"),
                     "forecast_type": forecast.get("type"),
                     "forecast_name": forecast.get("forecastName"),
@@ -57,8 +60,10 @@ def load_street_forecast():
                     "precipitation_condition": forecast.get("forecastConditionReason", {}).get("precipitationCondition"),
                     "road_condition": forecast.get("forecastConditionReason", {}).get("roadCondition")
                 })
-    df = pd.DataFrame.from_dict(joined_data)
-    return df
+    road_df = pd.DataFrame.from_dict(road_sections_data)
+    forecast_df = pd.DataFrame.from_dict(forecast_data)
+
+    return road_df, forecast_df
 
                     
 if __name__ == "__main__":

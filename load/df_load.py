@@ -22,18 +22,20 @@ def create_postgres_engine():
     
 ENGINE = create_postgres_engine()
 
-def load_tracks_postgres(df):
-    if df.empty:
+def load_tracks_postgres(road_df, forecast_df):
+    if road_df.empty or forecast_df.empty:
         raise ValueError("DataFrame is empty aborting load.")
 
 
     try:
          with ENGINE.begin() as connection:
             # Remove all old data since we only need the latest data in our use case
-            connection.execute(text("TRUNCATE TABLE road_sections"))
+            connection.execute(text("TRUNCATE TABLE road_forecasts, road_sections"))
+            
+
 
             # Insert fresh data
-            df.to_sql(
+            road_df.to_sql(
                 name="road_sections",
                 con=connection,
                 if_exists="append",
@@ -41,11 +43,19 @@ def load_tracks_postgres(df):
                 method="multi",
                 chunksize=5000
             )
-            
+            forecast_df.to_sql(
+                name="road_forecasts",
+                con=connection,
+                if_exists="append",
+                index=False,
+                method="multi",
+                chunksize=5000
+            )           
             
     
             
     except Exception as e:
         raise RuntimeError("Failed to load data into PostgreSQL") from e
-    return len(df)
+        
+    return len(road_df), len(forecast_df)
         
