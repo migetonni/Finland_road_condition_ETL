@@ -23,6 +23,10 @@ Features
 | **pandas**        | Data wrangling and transformation                  |
 | **SQLAlchemy**    | Database connection management                     |
 
+**Database Design**
+The pipeline uses a multitable schema separating static road data (road_sections) from time-variant forecast data (road_forecasts).
+Schema is managed outside the ETL runtime using SQL
+
 
 **DEPLOYMENT**
 This pipeline is deployed and managed via Prefect Cloud using the uv build system.

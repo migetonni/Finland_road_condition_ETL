@@ -42,6 +42,7 @@ def load_street_forecast():
                     road_sections_data.append({
                     "section_id": section_id,
                     "coordinates": section_coordinates})
+                
                     forecast_data.append({
                     "section_id": section_id,
                     "forecast_time": forecast.get("time"),
