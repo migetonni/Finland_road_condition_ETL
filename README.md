@@ -28,6 +28,8 @@ The pipeline uses a multitable schema separating static road data (road_sections
 Schema is managed outside the ETL runtime using SQL
 
 
+
+
 **DEPLOYMENT**
 This pipeline is deployed and managed via Prefect Cloud using the uv build system.
 Example deployment command:
