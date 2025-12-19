@@ -16,18 +16,49 @@ def transform_task(road_df, forecast_df):
         raise RuntimeError("df is empty")
     return transform_track_df(road_df, forecast_df)  
 
-@task(retries=3, retry_delay_seconds=10)
-def load_task(road_df, forecast_df):
-    return load_tracks_postgres(road_df, forecast_df)  
+@task( retry_delay_seconds=10)
+def load_task(
+    road_df,
+    forecast_df,
+    precipitation_df,
+    road_condition_df,
+    overall_condition_df,
+    reliability_df,
+):
+    return load_tracks_postgres(
+        road_df,
+        forecast_df,
+        precipitation_df,
+        road_condition_df,
+        overall_condition_df,
+        reliability_df,
+    ) 
 
 @flow
 def main():
     logger = get_run_logger()
 
     road_df, forecast_df = extract_task()
-    road_df_clean, forecast_df_clean = transform_task(road_df, forecast_df)
-    load_task(road_df_clean, forecast_df_clean)
-    logger.info(f"Loaded {load_task} rows into PostgreSQL")
+
+    (road_df_clean, 
+     forecast_df_clean, 
+     precipitation_df_clean, 
+     road_condition_df_clean, 
+     overall_condition_df_clean, 
+     reliability_df_clean) = transform_task(road_df, forecast_df)
+    
+    load_task(road_df_clean, forecast_df_clean, precipitation_df_clean, road_condition_df_clean, overall_condition_df_clean, reliability_df_clean)
+    
+    rows_loaded = load_task(
+    road_df_clean,
+    forecast_df_clean,
+    precipitation_df_clean,
+    road_condition_df_clean,
+    overall_condition_df_clean,
+    reliability_df_clean,
+    )
+
+    logger.info(f"Loaded {rows_loaded} rows into PostgreSQL")
 
 if __name__ == "__main__":
     main()
