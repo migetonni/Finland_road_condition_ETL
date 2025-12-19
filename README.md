@@ -24,10 +24,15 @@ Features
 | **SQLAlchemy**    | Database connection management                     |
 
 **Database Design**
-The pipeline uses a multitable schema separating static road data (road_sections) from time-variant forecast data (road_forecasts).
-Schema is managed outside the ETL runtime using SQL
+The pipeline uses an analytics-oriented SQL schema that separates time-variant forecast data from static and domain-controlled reference data.
 
-<img width="1026" height="698" alt="image" src="https://github.com/user-attachments/assets/c6cdfc26-646f-4cd3-843a-5682179ad829" />
+road_sections stores static metadata for each monitored road segment (geometry, road number, and classification).
+
+road_forecasts is the central fact table, containing time-based road condition observations and forecasts.
+
+Domain tables (precipitation_types, road_condition_types, overall_road_condition_types, reliability_types) define the allowed categorical values used in forecasts.
+
+<img width="980" height="642" alt="image" src="https://github.com/user-attachments/assets/ccf2a44b-580a-46de-810f-51104a951b62" />
 
 
 
