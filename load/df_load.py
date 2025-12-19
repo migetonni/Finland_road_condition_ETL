@@ -102,19 +102,8 @@ def load_tracks_postgres(
     
             
     except Exception as e:
-        import traceback
-        print("LOAD FAILED. Underlying exception:")
-        traceback.print_exc()
+        raise RuntimeError("Failed to load data into PostgreSQL") from e
 
-        # If it's a SQLAlchemy DBAPI error, print original DB error too
-        try:
-            orig = getattr(e, "orig", None)
-            if orig is not None:
-                print("DBAPI orig error:", repr(orig))
-        except Exception:
-            pass
-
-        raise
 
     return {
         "road_sections": len(road_df),
