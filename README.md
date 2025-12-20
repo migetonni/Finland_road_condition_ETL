@@ -11,7 +11,7 @@ Features
 - Data Transformation using Pandas
 
 - Cloud-Native Loading to Supabase
-- 
+  
 - Orchestration & Monitoring using Prefect cloud
 
   **TECH STACK**
