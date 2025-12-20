@@ -1,3 +1,5 @@
+--road sections dimension table
+
 CREATE TABLE road_sections (
     section_id TEXT PRIMARY KEY,
     road_number INT,
@@ -5,6 +7,7 @@ CREATE TABLE road_sections (
     coords_json TEXT
 );
 
+--domain tables
 CREATE TABLE precipitation_types (
     precipitation_condition TEXT PRIMARY KEY
 );
@@ -20,6 +23,7 @@ CREATE TABLE overall_road_condition_types (
 CREATE TABLE reliability_types (
     reliability TEXT PRIMARY KEY
 );
+--forecast fact table
 
 CREATE TABLE road_forecasts (
     section_id TEXT REFERENCES road_sections(section_id),
@@ -41,3 +45,17 @@ CREATE TABLE road_forecasts (
 );
 
 
+
+-- Analytics view
+
+CREATE OR REPLACE VIEW powerbi_road_conditions AS
+SELECT
+  rf.forecast_time,
+  rs.road_type,
+  rf.road_condition,
+  rf.road_temperature,
+  rf.air_temperature,
+  rf.reliability
+FROM road_forecasts rf
+JOIN road_sections rs
+  ON rf.section_id = rs.section_id;
