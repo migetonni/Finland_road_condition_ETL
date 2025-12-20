@@ -6,13 +6,13 @@ This pipeline is fully orchestrated and scheduled with Prefect Cloud, enabling r
 
 Features
 
-- Automated Data Collection — Periodically extracts up-to-date road condition data from the FINtraffic API.
+- Automated Data Collection From the FinTraffic APIs
 
-- Data Transformation — Cleans and structures the raw JSON data using pandas for easy downstream analysis.
+- Data Transformation using Pandas
 
-- Cloud-Native Loading — Loads the processed data into a Supabase PostgreSQL database.
-
-- Orchestration & Monitoring — Managed and scheduled with Prefect Cloud for observability, retry logic, and failure alerts.
+- Cloud-Native Loading to Supabase
+- 
+- Orchestration & Monitoring using Prefect cloud
 
   **TECH STACK**
 
@@ -63,10 +63,10 @@ uvx prefect-cloud schedule "main/finroadETL" "0 7 * * *"
 
 
 **ANALYTICS**
-The data produced from this ETL pipeline can be used for many types of analysis and dashboard cration of road conditions.
+The data produced from this ETL pipeline can be used for many types of analysis and dashboard creations of road conditions.
 From the example_queries.sql file you can find some queries that provide descriptive analytics from the data.
 
-Below is and example dashboard created in powerbi from the data that utilizes the View that is created in SQL
+Below is an example dashboard created in PowerBI from the the produced road data that utilizes the analytics view that is created in SQL
 
 <img width="1297" height="730" alt="image" src="https://github.com/user-attachments/assets/6818eb51-5da4-43b1-8d2d-4b705417f6c3" />
 
