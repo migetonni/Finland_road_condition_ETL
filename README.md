@@ -16,6 +16,8 @@ Features
 
   **TECH STACK**
 
+  
+
 | Tool              | Purpose                                            |
 | ----------------- | -------------------------------------------------- |
 | **Prefect Cloud** | Workflow orchestration, scheduling, and monitoring |
@@ -24,6 +26,8 @@ Features
 | **SQLAlchemy**    | Database connection management                     |
 
 **Database Design**
+
+
 The pipeline uses an analytics-oriented SQL schema that separates time-variant forecast data from static and domain-controlled reference data.
 
 road_sections stores static metadata for each monitored road segment (geometry, road number, and classification).
@@ -39,6 +43,8 @@ Domain tables (precipitation_types, road_condition_types, overall_road_condition
 
 
 **DEPLOYMENT**
+
+
 This pipeline is deployed and managed via Prefect Cloud using the uv build system.
 Example deployment command:
 
@@ -63,6 +69,8 @@ uvx prefect-cloud schedule "main/finroadETL" "0 7 * * *"
 
 
 **ANALYTICS**
+
+
 The data produced from this ETL pipeline can be used for many types of analysis and dashboard creations of road conditions.
 From the example_queries.sql file you can find some queries that provide descriptive analytics from the data.
 
@@ -73,6 +81,8 @@ Below is an example dashboard created in PowerBI from the the produced road data
 
 
 **AUTHOR**
+
+
 *Mixu Koski-Homi*
 
 
