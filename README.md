@@ -62,6 +62,16 @@ uvx prefect-cloud schedule "main/finroadETL" "0 7 * * *"
 <img width="427" height="376" alt="image" src="https://github.com/user-attachments/assets/d45236d7-ae24-4d2d-8f59-4b088a943f34" />
 
 
+**ANALYTICS**
+The data produced from this ETL pipeline can be used for many types of analysis and dashboard cration of road conditions.
+From the example_queries.sql file you can find some queries that provide descriptive analytics from the data.
+
+Below is and example dashboard created in powerbi from the data that utilizes the View that is created in SQL
+
+<img width="1297" height="730" alt="image" src="https://github.com/user-attachments/assets/6818eb51-5da4-43b1-8d2d-4b705417f6c3" />
+
+
+
 **AUTHOR**
 *Mixu Koski-Homi*
 
