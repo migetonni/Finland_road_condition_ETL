@@ -47,7 +47,6 @@ def main():
      overall_condition_df_clean, 
      reliability_df_clean) = transform_task(road_df, forecast_df)
     
-    load_task(road_df_clean, forecast_df_clean, precipitation_df_clean, road_condition_df_clean, overall_condition_df_clean, reliability_df_clean)
     
     rows_loaded = load_task(
     road_df_clean,
