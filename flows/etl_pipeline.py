@@ -16,7 +16,7 @@ def transform_task(road_df, forecast_df):
         raise RuntimeError("df is empty")
     return transform_track_df(road_df, forecast_df)  
 
-@task( retry_delay_seconds=10)
+@task(retries=3, retry_delay_seconds=10)
 def load_task(
     road_df,
     forecast_df,
