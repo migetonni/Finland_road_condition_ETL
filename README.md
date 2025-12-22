@@ -1,6 +1,6 @@
-**Finland Road Condition ETL Pipeline**
+## Finland Road Condition ETL Pipeline
 
-An automated ETL (Extract, Transform, Load) pipeline that fetches real-time road condition data from the FINtraffic API, processes it into a clean and usable format, and loads it into Supabase for storage and further analysis.
+An automated ETL (Extract, Transform, Load) pipeline that fetches real-time road condition data from the FINtraffic API, processes it into a clean and analytics-ready format, and loads it into Supabase for storage and further analysis and visualization.
 
 This pipeline is fully orchestrated and scheduled with Prefect Cloud, enabling reliable, maintainable, and automated data updates.
 
@@ -13,6 +13,14 @@ Features
 - Cloud-Native Loading to Supabase
   
 - Orchestration & Monitoring using Prefect cloud
+
+- Historical fact storage
+
+- ETL run metadata and observability
+
+- Analytics views for BI tools (Power BI)
+
+
 
   **TECH STACK**
 
@@ -28,13 +36,26 @@ Features
 **Database Design**
 
 
-The pipeline uses an analytics-oriented SQL schema that separates time-variant forecast data from static and domain-controlled reference data.
+## Database Design
 
-road_sections stores static metadata for each monitored road segment (geometry, road number, and classification).
+The database schema follows analytics best practices by separating:
 
-road_forecasts is the central fact table, containing time-based road condition observations and forecasts.
+### Core Tables
+- `road_sections` static road metadata
+- `road_forecasts`  latest snapshot of road conditions
+- `historical_road_conditions`  immutable historical fact table
 
-Domain tables (precipitation_types, road_condition_types, overall_road_condition_types, reliability_types) define the allowed categorical values used in forecasts.
+### Domain (Lookup) Tables
+- `precipitation_types`
+- `road_condition_types`
+- `overall_road_condition_types`
+- `reliability_types`
+
+Domain tables are loaded idempotently to avoid duplication and ensure data consistency.
+
+### ETL Metadata
+- `etl_runs` — captures execution status, duration, and errors for each pipeline run
+
 
 <img width="980" height="642" alt="image" src="https://github.com/user-attachments/assets/ccf2a44b-580a-46de-810f-51104a951b62" />
 
@@ -73,6 +94,10 @@ uvx prefect-cloud schedule "main/finroadETL" "0 7 * * *"
 
 The data produced from this ETL pipeline can be used for many types of analysis and dashboard creations of road conditions.
 From the example_queries.sql file you can find some queries that provide descriptive analytics from the data.
+
+The pipeline exposes analytics-ready data via a SQL view:
+
+- `powerbi_road_conditions`
 
 Below is an example dashboard created in PowerBI from the the produced road data that utilizes the analytics view that is created in SQL
 

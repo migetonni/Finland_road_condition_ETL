@@ -27,6 +27,7 @@ def prepare_domain_dfs(forecast_df):
         .drop_duplicates()
     )
 
+
     return (
         precipitation_df,
         road_condition_df,
@@ -42,7 +43,38 @@ def ensure_unknown(df, col):
         .reset_index(drop=True)
     )
 
- 
+
+def df_to_list(precip, road_cond, overall_cond, reliability):
+
+    #convert doamin dfs to list fro later insert statements
+    precipitation_values = (
+        precip["precipitation_condition"]
+        .dropna()
+        .tolist()
+)
+    cond_values = (
+        road_cond["road_condition"]
+        .dropna()
+        .unique()
+        .tolist()
+)
+
+    overall_values = (
+        overall_cond["overall_road_condition"]
+        .dropna()
+        .unique()
+        .tolist()
+    )
+
+    reliability_values = (
+        reliability["reliability"]
+        .dropna()
+        .unique()
+        .tolist()
+    )
+
+    return precipitation_values, cond_values, overall_values, reliability_values
+    
 
 
 def transform_track_df(road_df, forecast_df):
@@ -108,11 +140,14 @@ def transform_track_df(road_df, forecast_df):
     overall_condition_df = ensure_unknown(overall_condition_df, "overall_road_condition")
     reliability_df = ensure_unknown(reliability_df, "reliability")
 
-    
+    #make the domain tables values into lists so thet can be used to insert into domain tables with INSERT INTO statement
+
+
+    precip, road_cond, overall_cond, reliability = df_to_list(precipitation_df, road_condition_df, overall_condition_df, reliability_df)
     
     
 
-    return road_df, forecast_df, precipitation_df, road_condition_df, overall_condition_df, reliability_df
+    return road_df, forecast_df, precip, road_cond, overall_cond, reliability
     
 
 

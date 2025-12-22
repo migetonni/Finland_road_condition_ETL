@@ -1,9 +1,12 @@
 import sys
 import os
+from datetime import datetime, timezone
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from prefect import flow, task, get_run_logger
+from prefect.runtime import flow_run
 from extract.road_condition_extract import load_street_forecast
-from load.df_load import load_tracks_postgres
+from load.df_load import load_tracks_postgres, ENGINE
+from load.etl_metadata_load import load_etl_metadata
 from transform.transform_df import transform_track_df
 
 @task(retries=3, retry_delay_seconds=10)
@@ -37,25 +40,41 @@ def load_task(
 @flow
 def main():
     logger = get_run_logger()
+    run_id = str(flow_run.id)
+    flow_name = flow_run.name
+    started_at = datetime.now(timezone.utc)
 
-    road_df, forecast_df = extract_task()
+    
+    status = "SUCCESS"
+    error_message = None
+    try:
+        road_df, forecast_df = extract_task()
 
-    (road_df_clean, 
-     forecast_df_clean, 
-     precipitation_df_clean, 
-     road_condition_df_clean, 
-     overall_condition_df_clean, 
-     reliability_df_clean) = transform_task(road_df, forecast_df)
-    
-    
-    rows_loaded = load_task(
-    road_df_clean,
-    forecast_df_clean,
-    precipitation_df_clean,
-    road_condition_df_clean,
-    overall_condition_df_clean,
-    reliability_df_clean,
-    )
+        (road_df_clean, 
+        forecast_df_clean, 
+        precip, 
+        road_cond, 
+        overall_cond, 
+        reliability) = transform_task(road_df, forecast_df)
+        
+        
+        rows_loaded = load_task(
+        road_df_clean,
+        forecast_df_clean,
+        precip, 
+        road_cond, 
+        overall_cond, 
+        reliability
+        )
+    except Exception as e:
+        status = "FAILED"
+        error_message = str(e)
+        raise
+    finally:
+        finished_at = datetime.now(timezone.utc)
+        duration_seconds = int((finished_at - started_at).total_seconds())
+        load_etl_metadata(ENGINE, run_id, flow_name, started_at, finished_at, status, duration_seconds, error_message)
+
 
     logger.info(f"Loaded {rows_loaded} rows into PostgreSQL")
 
