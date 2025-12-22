@@ -60,8 +60,8 @@ CREATE TABLE historical_road_conditions(
     reliability TEXT REFERENCES reliability_types(reliability),
     data_updated_time TEXT,
     weather_symbol TEXT,             
-    road_condition TEXT REFERENCES road_condition_types(road_condition),
-    PRIMARY KEY (section_id, forecast_time)
+    road_condition TEXT REFERENCES road_condition_types(road_condition)
+    
 
 );
 
