@@ -41,7 +41,7 @@ CREATE TABLE road_forecasts (
     data_updated_time TEXT,
     weather_symbol TEXT,             
     road_condition TEXT REFERENCES road_condition_types(road_condition),
-    PRIMARY KEY (section_id, forecast_time, road_condition)
+    PRIMARY KEY (section_id, forecast_time, forecast_type)
 );
 
 --table for historical conditions

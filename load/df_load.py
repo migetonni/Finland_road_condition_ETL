@@ -108,7 +108,8 @@ def load_tracks_postgres(
     
             
     except Exception as e:
-        raise RuntimeError("Failed to load data into PostgreSQL") from e
+        print("LOAD ERROR:", e)
+        raise
 
 
     return {
