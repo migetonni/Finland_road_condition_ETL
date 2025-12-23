@@ -1,6 +1,7 @@
 import sys
 import os
 from datetime import datetime, timezone
+import pytz
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from prefect import flow, task, get_run_logger
 from prefect.runtime import flow_run
@@ -42,7 +43,10 @@ def main():
     logger = get_run_logger()
     run_id = str(flow_run.id)
     flow_name = flow_run.name
-    started_at = datetime.now(timezone.utc)
+
+    current_time = datetime.now()
+    timezone = pytz.timezone('Europe/Helsinki')
+    started_at = timezone.localize(current_time)
 
     
     status = "SUCCESS"
@@ -71,7 +75,8 @@ def main():
         error_message = str(e)
         raise
     finally:
-        finished_at = datetime.now(timezone.utc)
+        current_time = datetime.now()
+        finished_at = timezone.localize(current_time)
         duration_seconds = int((finished_at - started_at).total_seconds())
         load_etl_metadata(ENGINE, run_id, flow_name, started_at, finished_at, status, duration_seconds, error_message)
 

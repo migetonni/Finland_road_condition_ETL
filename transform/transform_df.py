@@ -85,7 +85,7 @@ def transform_track_df(road_df, forecast_df):
 
     #time to datetime 
 
-    forecast_df["forecast_time"] = pd.to_datetime(forecast_df["forecast_time"], utc=True)
+    forecast_df["forecast_time"] = pd.to_datetime(forecast_df["forecast_time"])
     #dropping duplicates
     road_df = road_df.drop_duplicates(subset=["section_id"], keep="last")
     forecast_df = forecast_df.drop_duplicates(subset=["section_id", "forecast_time", "road_condition"], keep="last")
