@@ -88,3 +88,10 @@ FROM
   GROUP BY road_type;
 
 
+-- avg temperatures for all road condition types where tempreature of air is higher than road temperature and vice versa
+SELECT rf.road_condition, 
+AVG (CASE WHEN rf.air_temperature > rf.road_temperature THEN rf.road_temperature END) as avgtempairhigher, 
+AVG (CASE WHEN rf.air_temperature < rf.road_temperature THEN rf.road_temperature END) as avgtempairlower 
+FROM road_forecasts as rf
+JOIN road_sections as rs on rf.section_id = rs.section_id 
+GROUP BY rf.road_condition;
