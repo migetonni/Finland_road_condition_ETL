@@ -50,6 +50,7 @@ The database schema follows analytics best practices by separating:
 - `overall_road_condition_types`
 - `reliability_types`
 - `road_sections`
+- `datetime`
 
 Dimension tables are loaded idempotently to avoid duplication and ensure data consistency.
 
