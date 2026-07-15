@@ -40,18 +40,18 @@ Features
 
 The database schema follows analytics best practices by separating:
 
-### Core Tables
-- `road_sections` static road metadata
+### Core Fact Tables
 - `road_forecasts`  latest snapshot of road conditions
 - `historical_road_conditions`  immutable historical fact table
 
-### Domain (Lookup) Tables
+### Dimension Tables
 - `precipitation_types`
 - `road_condition_types`
 - `overall_road_condition_types`
 - `reliability_types`
+- `road_sections`
 
-Domain tables are loaded idempotently to avoid duplication and ensure data consistency.
+Dimension tables are loaded idempotently to avoid duplication and ensure data consistency.
 
 ### ETL Metadata
 - `etl_runs` — captures execution status, duration, and errors for each pipeline run
