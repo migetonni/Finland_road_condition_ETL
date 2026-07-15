@@ -80,7 +80,74 @@ CREATE TABLE etl_runs (
     error_message TEXT
 );
 
+--datetime dimension table
 
+CREATE TABLE datetime (
+    datetime_key INTEGER PRIMARY KEY,
+    full_timestamp TIMESTAMPTZ NOT NULL UNIQUE,
+    date DATE NOT NULL,
+    year INTEGER NOT NULL,
+    quarter INTEGER NOT NULL,
+    month INTEGER NOT NULL,
+    month_name TEXT NOT NULL,
+    week INTEGER NOT NULL,
+    day INTEGER NOT NULL,
+    day_of_week INTEGER NOT NULL,
+    day_name TEXT NOT NULL,
+    hour INTEGER NOT NULL,
+    is_weekend BOOLEAN NOT NULL
+);
+
+--filling dimension table
+INSERT INTO datetime
+SELECT
+    ROW_NUMBER() OVER () AS datetime_key,
+    ts,
+    ts::date,
+    EXTRACT(YEAR FROM ts)::int,
+    EXTRACT(QUARTER FROM ts)::int,
+    EXTRACT(MONTH FROM ts)::int,
+    TO_CHAR(ts, 'Month'),
+    EXTRACT(WEEK FROM ts)::int,
+    EXTRACT(DAY FROM ts)::int,
+    EXTRACT(DOW FROM ts)::int,
+    TO_CHAR(ts, 'Day'),
+    EXTRACT(HOUR FROM ts)::int,
+    EXTRACT(DOW FROM ts) IN (0,6)
+FROM generate_series(
+    '2025-01-01 00:00:00+00'::timestamptz,
+    '2027-12-31 23:00:00+00'::timestamptz,
+    INTERVAL '1 hour'
+) AS ts;
+
+
+-- adding datetime_key to fact tables and making relationship to datetime table
+ALTER TABLE road_forecasts
+ADD COLUMN datetime_key INTEGER;
+
+UPDATE road_forecasts rf
+SET datetime_key = dt.datetime_key
+FROM datetime dt
+WHERE rf.forecast_time = dt.full_timestamp;
+
+ALTER TABLE road_forecasts
+ADD CONSTRAINT fk_datetime
+FOREIGN KEY (datetime_key)
+REFERENCES datetime(datetime_key);
+
+
+ALTER TABLE historical_road_conditions
+ADD COLUMN datetime_key INTEGER;
+
+UPDATE historical_road_conditions hr
+SET datetime_key = dt.datetime_key
+FROM datetime dt
+WHERE hr.forecast_time = dt.full_timestamp;
+
+ALTER TABLE historical_road_conditions
+ADD CONSTRAINT fk_datetime
+FOREIGN KEY (datetime_key)
+REFERENCES datetime(datetime_key);
 
 -- Analytics view
 
