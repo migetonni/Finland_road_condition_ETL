@@ -57,7 +57,8 @@ Domain tables are loaded idempotently to avoid duplication and ensure data consi
 - `etl_runs` — captures execution status, duration, and errors for each pipeline run
 
 
-<img width="773" height="678" alt="image" src="https://github.com/user-attachments/assets/47c2f025-ee38-435a-9f30-a418d928b990" />
+<img width="1538" height="640" alt="supabase-schema-qnfoadfqgkshjirsdmyn" src="https://github.com/user-attachments/assets/299e32c9-8e97-4497-aaeb-74fa993eb65b" />
+
 
 
 
