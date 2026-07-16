@@ -38,7 +38,7 @@ Features
 
 ## Database Design
 
-The database schema follows analytics best practices by separating:
+The database schema follows analytics best practices by implementing star schema:
 
 ### Core Fact Tables
 - `road_forecasts`  latest snapshot of road conditions
