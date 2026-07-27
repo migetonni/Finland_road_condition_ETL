@@ -103,7 +103,16 @@ def load_tracks_postgres(
                 index=False,
                 method="multi",
                 chunksize=5000,
-            )         
+            )
+
+            
+            connection.execute(text("""
+                UPDATE road_forecasts rf
+                SET datetime_key = dt.datetime_key
+                FROM datetime dt
+                WHERE rf.datetime_key IS NULL
+                AND date_trunc('hour', rf.forecast_time) = dt.full_timestamp;
+            """))
             
     
             
